@@ -14,8 +14,9 @@ sys.stderr.reconfigure(line_buffering=True, write_through=True)
 if os.getenv("ACTIONS_STEP_DEBUG", "false").lower() == "true":
     change_log_level("DEBUG")
 
-root = Path(__file__).resolve().parents[1]
-repo_dir = root / os.getenv("REPOSITORY_DIRECTORY", "Fabric")  # 👈 match your folder name
+# The repo root (one level above .deploy/)
+root = Path(__file__).resolve().parents[2]
+repo_dir = root / os.getenv("REPOSITORY_DIRECTORY", ".")  # "." means repo root
 
 workspace_id = os.getenv("FABRIC_WORKSPACE_ID", "").strip()
 if not workspace_id:
@@ -33,15 +34,15 @@ print(f"[fabric-cicd] Workspace: {workspace_id} | Env: {environment} | Scope: {i
 if not repo_dir.exists():
     raise SystemExit(f"Repository directory '{repo_dir}' not found.")
 
-# 👇 Explicitly tell fabric-cicd to use parameter.yml
-find_replace_file = str(root / ".deploy" / "parameter.yml")
+# explicitly point to parameter.yml
+find_replace_file = str(Path(__file__).resolve().parents[1] / "parameter.yml")
 
 ws = FabricWorkspace(
     workspace_id=workspace_id,
     environment=environment,
     repository_directory=str(repo_dir),
     item_type_in_scope=items,
-    find_replace_file=find_replace_file,  # 👈 important
+    find_replace_file=find_replace_file,
 )
 
 publish_all_items(ws)
