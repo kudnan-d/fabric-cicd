@@ -48,7 +48,7 @@ jobs:
         env:
           FABRIC_ENVIRONMENT:  ${{ inputs.environment }}
           FABRIC_WORKSPACE_ID: ${{ secrets.FABRIC_WORKSPACE_ID }}
-          REPOSITORY_DIRECTORY: Fabric   # 👈 case-sensitive
+          REPOSITORY_DIRECTORY: .     # 👈 fixed
           ITEMS_IN_SCOPE: Notebook,DataPipeline,Lakehouse,SemanticModel,Report,Warehouse
           ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || 'false' }}
           UNPUBLISH_ORPHANS: ${{ secrets.UNPUBLISH_ORPHANS || 'false' }}
