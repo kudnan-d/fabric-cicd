@@ -7,7 +7,7 @@ from fabric_cicd import (
     change_log_level,
 )
 
-# Live logs
+# Live logs in GitHub Actions
 sys.stdout.reconfigure(line_buffering=True, write_through=True)
 sys.stderr.reconfigure(line_buffering=True, write_through=True)
 
@@ -15,7 +15,7 @@ if os.getenv("ACTIONS_STEP_DEBUG", "false").lower() == "true":
     change_log_level("DEBUG")
 
 root = Path(__file__).resolve().parents[1]
-repo_dir = root / os.getenv("REPOSITORY_DIRECTORY", "fabric")
+repo_dir = root / os.getenv("REPOSITORY_DIRECTORY", "Fabric")  # 👈 match your folder name
 
 workspace_id = os.getenv("FABRIC_WORKSPACE_ID", "").strip()
 if not workspace_id:
@@ -33,11 +33,15 @@ print(f"[fabric-cicd] Workspace: {workspace_id} | Env: {environment} | Scope: {i
 if not repo_dir.exists():
     raise SystemExit(f"Repository directory '{repo_dir}' not found.")
 
+# 👇 Explicitly tell fabric-cicd to use parameter.yml
+find_replace_file = str(root / ".deploy" / "parameter.yml")
+
 ws = FabricWorkspace(
     workspace_id=workspace_id,
     environment=environment,
     repository_directory=str(repo_dir),
     item_type_in_scope=items,
+    find_replace_file=find_replace_file,  # 👈 important
 )
 
 publish_all_items(ws)
