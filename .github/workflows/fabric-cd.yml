@@ -53,4 +53,4 @@ jobs:
           UNPUBLISH_ORPHANS: ${{ secrets.UNPUBLISH_ORPHANS || 'false' }}
           PYTHONUNBUFFERED: "1"
         run: |
-          python ./.deploy/deploy.py
+          python ./Fabric/.deploy/deploy.py
