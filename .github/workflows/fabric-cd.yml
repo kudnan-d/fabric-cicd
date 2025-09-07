@@ -1,57 +1,78 @@
-name: Fabric CD (client secret)
+# .github/workflows/fabric-deploy.yml
+name: Deploy Fabric DirectLake (2-pass)
 
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: "Target environment"
-        required: true
-        type: choice
-        options: [DEV, PROD]
-        default: DEV
-
-permissions:
-  contents: read
+      envName: { description: "ppe|prod", required: true, default: "prod" }
+      workspaceName: { description: "Target Workspace Name", required: true }
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    env:
+      PARAM_FILE: .deploy/parameter.yml
+      FIRST_ITEMS: 'AllExcept("Report","SemanticModel")'
+      SECOND_ITEMS: 'Only("Report","SemanticModel")'
+      FABRIC_RESOURCE_URL: https://api.fabric.microsoft.com
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
 
-      - name: Azure login (SPN with client secret)
-        uses: azure/login@v2
-        with:
-          # JSON: {"clientId":"<GUID>","clientSecret":"<SECRET>","tenantId":"<GUID>"}
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          allow-no-subscriptions: true
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install deps
+      - name: Install CLIs
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          python - <<'PY'
-          import fabric_cicd, sys
-          print("fabric-cicd:", getattr(fabric_cicd, "__version__", "unknown"))
-          print("python:", sys.version)
-          PY
+          pip install fabric-cicd
+          curl -sL https://aka.ms/fabriccli/install.sh | bash
+          sudo apt-get update && sudo apt-get install -y jq yq
 
-      - name: Deploy to Fabric
+      # -------- PASS 1: deploy everything except model/report --------
+      - name: Deploy Pass 1
+        run: |
+          fabric-cicd deploy \
+            --parameter-file "$PARAM_FILE" \
+            --environment ${{ github.event.inputs.envName }} \
+            --items-in-scope '${{ env.FIRST_ITEMS }}'
+
+      # -------- FETCH IDs from target Lakehouse --------
+      - name: Login to Fabric CLI
         env:
-          FABRIC_ENVIRONMENT:  ${{ inputs.environment }}
-          FABRIC_WORKSPACE_ID: ${{ secrets.FABRIC_WORKSPACE_ID }}
-          REPOSITORY_DIRECTORY: .     # 👈 fixed
-          ITEMS_IN_SCOPE: Notebook,DataPipeline,Lakehouse,SemanticModel,Report,Warehouse
-          ACTIONS_STEP_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG || 'false' }}
-          UNPUBLISH_ORPHANS: ${{ secrets.UNPUBLISH_ORPHANS || 'false' }}
-          PYTHONUNBUFFERED: "1"
+          FABRIC_TENANT_ID: ${{ secrets.FABRIC_TENANT_ID }}
+          FABRIC_CLIENT_ID: ${{ secrets.FABRIC_CLIENT_ID }}
+          FABRIC_CLIENT_SECRET: ${{ secrets.FABRIC_CLIENT_SECRET }}
         run: |
-          python ./Fabric/.deploy/deploy.py
+          fab login sp \
+            --tenant $FABRIC_TENANT_ID \
+            --client-id $FABRIC_CLIENT_ID \
+            --client-secret $FABRIC_CLIENT_SECRET \
+            --resource-url "${{ env.FABRIC_RESOURCE_URL }}"
+
+      - name: Get Lakehouse databaseId
+        id: lh
+        run: |
+          WS_ID=$(fab get "${{ github.event.inputs.workspaceName }}.Workspace" -q id)
+          RESP=$(fab api GET "/v1/workspaces/$WS_ID/lakehouses")
+          LH_ID=$(echo "$RESP" | jq -r '.value[] | select(.displayName=="bronze_lh") | .id')
+          test -n "$LH_ID" || { echo "Lakehouse bronze_lh not found"; exit 1; }
+          DETAILS=$(fab api GET "/v1/workspaces/$WS_ID/lakehouses/$LH_ID")
+          DB_ID=$(echo "$DETAILS" | jq -r '.properties.sqlEndpointProperties.databaseId // .properties.sqlEndpointProperties.id')
+          echo "db_id=$DB_ID" >> $GITHUB_OUTPUT
+
+      - name: Patch parameter.yml with databaseId
+        run: |
+          cp "$PARAM_FILE" .deploy/parameter-pass2.yml
+          yq -i '
+            (.find_replace[] | select(.find_value=="DL_DATABASE_ID_TO_BE_SET_BY_CI")).replace_value.PPE = "${{ steps.lh.outputs.db_id }}" |
+            (.find_replace[] | select(.find_value=="DL_DATABASE_ID_TO_BE_SET_BY_CI")).replace_value.PROD = "${{ steps.lh.outputs.db_id }}"
+          ' .deploy/parameter-pass2.yml
+          echo "Patched file:"
+          yq '.find_replace[] | select(.item_type=="SemanticModel")' .deploy/parameter-pass2.yml
+
+      # -------- PASS 2: deploy only model/report --------
+      - name: Deploy Pass 2
+        run: |
+          fabric-cicd deploy \
+            --parameter-file ".deploy/parameter-pass2.yml" \
+            --environment ${{ github.event.inputs.envName }} \
+            --items-in-scope '${{ env.SECOND_ITEMS }}'
