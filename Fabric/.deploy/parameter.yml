@@ -18,15 +18,15 @@ find_replace:
       PROD: "$workspace.id"
 
   # Lakehouse database GUID
-  - find_value: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
-    replace_value:
-      DEV: "$items.Lakehouse.bronze_lh.id"
-      PROD: "$items.Lakehouse.bronze_lh.id"
+  # - find_value: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
+  #   replace_value:
+  #     DEV: "$items.Lakehouse.bronze_lh.id"
+  #     PROD: "$items.Lakehouse.bronze_lh.id"
   # Lakehouse database GUID
   - find_value: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
     replace_value:
-      DEV: "$items.Lakehouse.bronze_lh.id"
-      PROD: "$items.Lakehouse.bronze_lh.id"
+      DEV: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
+      PROD: "413dee50-682e-4bc2-861b-58e1232adb8d"
 
   # Lakehouse SQL endpoint
   - find_value: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
