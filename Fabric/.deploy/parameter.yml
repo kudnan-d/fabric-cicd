@@ -1,9 +1,9 @@
 find_replace:
   # Lakehouse SQL endpoint
-  - find_value: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
-    replace_value:
-      DEV: "$items.Lakehouse.bronze_lh.sqlendpoint"
-      PROD: "$items.Lakehouse.bronze_lh.sqlendpoint"
+  # - find_value: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
+  #  replace_value:
+  #    DEV: "$items.Lakehouse.bronze_lh.sqlendpoint"
+  #   PROD: "$items.Lakehouse.bronze_lh.sqlendpoint"
 
   # Semantic Model GUID (datasetId in .pbism)
   - find_value: "2c3530fb-67bb-42e9-b4f3-9ced9e361e9c"
