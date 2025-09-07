@@ -1,37 +1,19 @@
 find_replace:
-  # Lakehouse SQL endpoint
-
-  - find_value: "U45POLRYDNZUHDEJWN5HOPHDVM-5YAHJ72PHEMUDPJJG2UUORFXE4.datawarehouse.fabric.microsoft.com"
+  # Direct Lake: Lakehouse SQL endpoint (dynamic)
+  - find_value: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
     replace_value:
-      DEV: "$items.Lakehouse.bronze_lh.sqlendpoint"
+      PPE:  "$items.Lakehouse.bronze_lh.sqlendpoint"
       PROD: "$items.Lakehouse.bronze_lh.sqlendpoint"
 
-
-  # Semantic Model GUID (datasetId in .pbism)
-  - find_value: "2c3530fb-67bb-42e9-b4f3-9ced9e361e9c"
+  # Direct Lake: Semantic Model database id (patched later by CI)
+  - find_value: "DL_DATABASE_ID_TO_BE_SET_BY_CI"
     replace_value:
-      DEV: "$items.SemanticModel.SemanticModel1.id"
-      PROD: "$items.SemanticModel.SemanticModel1.id"
+      PPE:  "DL_DATABASE_ID_TO_BE_SET_BY_CI"
+      PROD: "DL_DATABASE_ID_TO_BE_SET_BY_CI"
+    item_type: "SemanticModel"
 
-  # Workspace ID
+  # Workspace ID (still works without config.json, fabric-cicd resolves dynamically)
   - find_value: "ff7400ee-394f-4119-bd29-36a94744b727"
     replace_value:
-      DEV: "$workspace.id"
+      PPE:  "$workspace.id"
       PROD: "$workspace.id"
-
-  # Lakehouse database GUID
-  # - find_value: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
-  #   replace_value:
-  #     DEV: "$items.Lakehouse.bronze_lh.id"
-  #     PROD: "$items.Lakehouse.bronze_lh.id"
-  # Lakehouse database GUID
-  - find_value: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
-    replace_value:
-      DEV: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
-      PROD: "413dee50-682e-4bc2-861b-58e1232adb8d"
-
-  # Lakehouse SQL endpoint
-  - find_value: "U45POLRYDNZUHDEJWN5HOPHDVM-5YAHJ72PHEMUDPJJG2UUORFXE4.datawarehouse.fabric.microsoft.com"
-    replace_value:
-      DEV: "U45POLRYDNZUHDEJWN5HOPHDVM-5YAHJ72PHEMUDPJJG2UUORFXE4.datawarehouse.fabric.microsoft.com"
-      PROD: "U45POLRYDNZUHDÉJWN5HOPHDVM-6ASSOK37UCOERIELAHL63SXKZ4.datawarehouse.fabric.microsoft.com"
