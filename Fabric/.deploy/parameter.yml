@@ -22,3 +22,14 @@ find_replace:
     replace_value:
       DEV: "$items.Lakehouse.bronze_lh.id"
       PROD: "$items.Lakehouse.bronze_lh.id"
+  # Lakehouse database GUID
+  - find_value: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
+    replace_value:
+      DEV: "$items.Lakehouse.bronze_lh.id"
+      PROD: "$items.Lakehouse.bronze_lh.id"
+
+  # Lakehouse SQL endpoint
+  - find_value: "u45polrydnzuhdejwn5hophdvm-6assok37ucoerielahl63sxkz4.datawarehouse.fabric.microsoft.com"
+    replace_value:
+      DEV: "u45polrydnzuhdejwn5hophdvm-6assok37ucoerielahl63sxkz4.datawarehouse.fabric.microsoft.com"
+      PROD: "u45polrydnzuhdejwn5hophdvm-6assok37ucoerielahl63sxkz4.datawarehouse.fabric.microsoft.com"
