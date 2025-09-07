@@ -42,7 +42,7 @@ ws = FabricWorkspace(
     environment=environment,
     repository_directory=str(repo_dir),
     item_type_in_scope=items,
-    find_replace_file=find_replace_file,
+    parameter_file_path=find_replace_file,
 )
 
 publish_all_items(ws)
