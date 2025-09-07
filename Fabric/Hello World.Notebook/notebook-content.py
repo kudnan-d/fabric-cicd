@@ -25,7 +25,7 @@
 # Welcome to your new notebook
 # Type here in the cell editor to add code!
 
-print("hello from feature 2")
+print("Notebook Parameterization")
 
 # METADATA ********************
 
