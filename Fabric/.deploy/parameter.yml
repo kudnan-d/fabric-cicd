@@ -29,7 +29,7 @@ find_replace:
       PROD: "$items.Lakehouse.bronze_lh.id"
 
   # Lakehouse SQL endpoint
-  - find_value: "u45polrydnzuhdejwn5hophdvm-6assok37ucoerielahl63sxkz4.datawarehouse.fabric.microsoft.com"
+  - find_value: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
     replace_value:
-      DEV: "u45polrydnzuhdejwn5hophdvm-6assok37ucoerielahl63sxkz4.datawarehouse.fabric.microsoft.com"
+      DEV: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
       PROD: "u45polrydnzuhdejwn5hophdvm-6assok37ucoerielahl63sxkz4.datawarehouse.fabric.microsoft.com"
