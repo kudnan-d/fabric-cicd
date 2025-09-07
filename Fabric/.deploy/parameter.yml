@@ -22,7 +22,7 @@ find_replace:
       DEV:  "$workspace.id"
       PROD: "$workspace.id"
   # Lakehouse database GUID
-  - find_value: "ff7400ee-394f-4119-bd29-36a94744b727"
+  - find_value: "47dc3d49-cfb5-419c-9e36-ab95a0421730"
     replace_value:
       DEV:  "$items.Lakehouse.bronze_lh.id"
       PROD: "$items.Lakehouse.bronze_lh.id"
