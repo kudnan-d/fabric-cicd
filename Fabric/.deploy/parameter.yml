@@ -1,6 +1,6 @@
 find_replace:
   # Lakehouse SQL endpoint
-  - find_value: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
+  - find_value: "U45POLRYDNZUHDEJWN5HOPHDVM-5YAHJ72PHEMUDPJJG2UUORFXE4.datawarehouse.fabric.microsoft.com"
     replace_value:
       DEV: "$items.Lakehouse.bronze_lh.sqlendpoint"
       PROD: "$items.Lakehouse.bronze_lh.sqlendpoint"
@@ -29,7 +29,7 @@ find_replace:
       PROD: "$items.Lakehouse.bronze_lh.id"
 
   # Lakehouse SQL endpoint
-  - find_value: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
+  - find_value: "U45POLRYDNZUHDEJWN5HOPHDVM-5YAHJ72PHEMUDPJJG2UUORFXE4.datawarehouse.fabric.microsoft.com"
     replace_value:
-      DEV: "u45polrydnzuhdejwn5hophdvm-5yahj72phemudpjjg2uuorfxe4.datawarehouse.fabric.microsoft.com"
-      PROD: "u45polrydnzuhdejwn5hophdvm-6assok37ucoerielahl63sxkz4.datawarehouse.fabric.microsoft.com"
+      DEV: "U45POLRYDNZUHDEJWN5HOPHDVM-5YAHJ72PHEMUDPJJG2UUORFXE4.datawarehouse.fabric.microsoft.com"
+      PROD: "U45POLRYDNZUHDÉJWN5HOPHDVM-6ASSOK37UCOERIELAHL63SXKZ4.datawarehouse.fabric.microsoft.com"
